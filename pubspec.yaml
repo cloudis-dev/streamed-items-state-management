@@ -1,0 +1,19 @@
+name: streamed_items_state_management
+description: State management of items received via stream with updates.
+version: 0.0.1
+author: Kristián Balaj
+homepage: https://github.com/KristianBalaj
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
