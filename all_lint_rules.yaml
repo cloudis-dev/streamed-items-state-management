@@ -1,0 +1,42 @@
+include: package:effective_dart/analysis_options.yaml
+
+linter:
+  rules:
+    - await_only_futures
+    - prefer_expression_function_bodies
+    - prefer_typing_uninitialized_variables
+    - use_function_type_syntax_for_parameters
+    - always_use_package_imports
+    - unnecessary_getters_setters
+    - unnecessary_lambdas
+    - avoid_relative_lib_imports
+    - avoid_empty_else
+    - avoid_init_to_null
+    - avoid_return_types_on_setters
+    - avoid_web_libraries_in_flutter
+    - camel_case_types
+    - cancel_subscriptions
+    - close_sinks
+    - comment_references
+    - constant_identifier_names
+    - control_flow_in_finally
+    - empty_constructor_bodies
+    - empty_statements
+    - hash_and_equals
+    - implementation_imports
+    - invariant_booleans
+    - iterable_contains_unrelated_type
+    - literal_only_boolean_expressions
+    - non_constant_identifier_names
+    - overridden_fields
+    - prefer_is_not_empty
+    - slash_for_doc_comments
+    - test_types_in_equals
+    - throw_in_finally
+    - type_init_formals
+    - unawaited_futures
+    - cascade_invocations
+    - unnecessary_brace_in_string_interps
+    - unnecessary_statements
+    - unrelated_type_equality_checks
+    - prefer_single_quotes

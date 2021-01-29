@@ -11,9 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  tuple: ^1.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  effective_dart: ^1.3.0
 
 flutter:
