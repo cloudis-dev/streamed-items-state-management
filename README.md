@@ -20,6 +20,11 @@ It uses the [Riverpod](https://pub.dev/packages/riverpod) for the state manageme
 This example is using just a single stream for receiving products 
 (the stream is using mocked data and sending price updates to products with some delays).
 
+In case we need to paginate the data, then the change is really similar 
+to the current single stream (single page) example.
+The `ProductsStateNotifier` would just need to inherit from the `PagedStreamsItemsStateNotifier`
+instead of the `SingleStreamItemsStateNotifier`.
+
 
 ## TODO
 - remove cloud firestore dependency (it is used only for the `DocumentChangeType` enum)
