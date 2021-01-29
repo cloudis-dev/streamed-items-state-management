@@ -1,0 +1,25 @@
+name: example
+description: An example usage of streamed_items_state_management package.
+publish_to: "none"
+version: 0.0.1
+author: Kristián Balaj
+homepage: https://github.com/KristianBalaj
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.15.0
+  hooks_riverpod: ^0.12.1
+  streamed_items_state_management:
+    git:
+      url: https://github.com/cloudis-dev/streamed-items-state-management.git
+      ref: master
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
