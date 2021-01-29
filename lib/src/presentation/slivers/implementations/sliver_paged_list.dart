@@ -10,7 +10,7 @@ class SliverPagedList<T> extends PagedScrollViewBase {
     int cacheItemsCountExtent,
     @required ItemsState<T> itemsState,
     @required ScrollViewItemBuilder<T> itemBuilder,
-    @required void Function() requestNextBatch,
+    @required void Function() requestData,
     ScrollViewErrorWidgetBuilder errorWidgetBuilder,
     WidgetBuilder loadingWidgetBuilder,
   }) : super(
@@ -20,7 +20,7 @@ class SliverPagedList<T> extends PagedScrollViewBase {
           ),
           itemBuilder: itemBuilder,
           itemsState: itemsState,
-          requestNextBatch: requestNextBatch,
+          requestData: requestData,
           errorWidgetBuilder: errorWidgetBuilder,
           loadingWidgetBuilder: loadingWidgetBuilder,
           key: key,
