@@ -1,0 +1,32 @@
+include: all_lint_rules.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: true
+    implicit-dynamic: true
+  errors:
+    public_member_api_docs: ignore
+    included_file_warning: ignore
+    top_level_function_literal_block: ignore
+    invalid_assignment: warning
+    missing_return: info
+    dead_code: info
+    missing_required_param: error
+
+linter:
+  rules:
+    type_annotate_public_apis: false
+    avoid_classes_with_only_static_members: false
+    prefer_double_quotes: false
+    always_specify_types: false
+    prefer_expression_function_bodies: false
+    always_put_required_named_parameters_first: false
+    avoid_as: false
+    flutter_style_todos: false
+    avoid_catches_without_on_clauses: false
+    lines_longer_than_80_chars: false
+    avoid_annotating_with_dynamic: false
+    avoid_function_literals_in_foreach_calls: false
+    prefer_relative_imports: false
+    no_default_cases: false
+    prefer_mixin: false
