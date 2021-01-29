@@ -2,7 +2,7 @@ import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
 import 'package:streamed_items_state_management/src/presentation/view_models/implementations/single_stream_items_state_notifier.dart';
 
-import '../../data/product_model.dart';
+import '../data/product_model.dart';
 
 /// State management for streamed [ProductModel]s.
 ///

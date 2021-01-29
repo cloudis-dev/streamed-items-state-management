@@ -3,12 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:streamed_items_state_management/src/presentation/slivers/implementations/sliver_paged_list.dart';
 
-import '../../data/product_model.dart';
-import '../providers/providers.dart';
-
-void main() {
-  runApp(ProviderScope(child: MyApp()));
-}
+import '../data/product_model.dart';
+import 'providers.dart';
 
 /// Scroll list view with products.
 /// The items are updated.
