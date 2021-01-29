@@ -10,7 +10,7 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
     @required this.scrollViewSliverBuilder,
     @required this.itemBuilder,
     @required this.itemsState,
-    @required this.requestNextBatch,
+    @required this.requestData,
     this.errorWidgetBuilder,
     this.loadingWidgetBuilder,
     Key key,
@@ -25,7 +25,7 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
   final WidgetBuilder loadingWidgetBuilder;
 
   final ItemsState<T> itemsState;
-  final void Function() requestNextBatch;
+  final void Function() requestData;
 
   /// Number of invisible items that trigger a new fetch.
   final int cacheItemsCountExtent;
@@ -40,7 +40,7 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
             (context, index) {
               if (itemsState.status == ItemsStateStatus.waiting &&
                   itemsState.items.length - index < cacheItemsCountExtent) {
-                requestNextBatch();
+                requestData();
               }
 
               return itemBuilder(context, itemsState.items[index]);
@@ -71,12 +71,12 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
                           children: [
                             Icon(Icons.warning),
                             RaisedButton(
-                              onPressed: requestNextBatch,
+                              onPressed: requestData,
                               child: Icon(Icons.refresh),
                             ),
                           ],
                         )
-                      : errorWidgetBuilder(context, requestNextBatch);
+                      : errorWidgetBuilder(context, requestData);
                 default:
                   return const SizedBox.shrink();
               }

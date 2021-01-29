@@ -5,6 +5,12 @@ import 'package:streamed_items_state_management/src/utils/distinct_extension.dar
 /// Functionality for removing, updating and adding items to pagination's state.
 ///
 /// The items are compared based on the [uniqueSelector].
+///
+/// [T] is the type of the item.
+///
+/// [E] parameter type is the type returned by the unique selector.
+/// The items are compared based on the [E] paramter type.
+/// E.g. for unique ids of products the [E] type will be [String].
 class ItemsHandler<T, E> {
   ItemsHandler(
     this.sortCompare,
