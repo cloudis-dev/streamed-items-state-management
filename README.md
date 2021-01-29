@@ -1,4 +1,4 @@
-![Build](https://github.com/cloudis-dev/streamed-items-state-management/workflows/Flutter%20build/badge.svg)
+![Build](https://github.com/cloudis-dev/streamed-items-state-management/workflows/Flutter%20build/badge.svg?branch=master)
 [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://pub.dev/packages/effective_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
