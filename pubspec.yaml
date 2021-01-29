@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   tuple: ^1.0.3
+  cloud_firestore: ^0.16.0
 
 dev_dependencies:
   flutter_test:
