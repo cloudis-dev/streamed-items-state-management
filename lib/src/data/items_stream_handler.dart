@@ -121,6 +121,8 @@ class ItemsStreamHandler<T> {
     return _streamSubscription.cancel();
   }
 
+  /// Process the incomming data with current [ItemsState]
+  /// and return the updated [ItemsState].
   ItemsState<T> _createUpdatedState(
     ItemsState<T> currentItemsState,
     List<Tuple2<DocumentChangeType, T>> data,
@@ -154,7 +156,7 @@ class ItemsStreamHandler<T> {
     return currentItemsState;
   }
 
-  /// Get items from the payload of the given changeType.
+  /// Get items from the batch of the given changeType.
   List<T> _getItemsByChangeType(
     List<Tuple2<DocumentChangeType, T>> data,
     DocumentChangeType changeType,
