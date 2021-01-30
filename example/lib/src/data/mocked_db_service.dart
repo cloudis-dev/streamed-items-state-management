@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:example/src/data/product_model.dart';
 import 'package:streamed_items_state_management/streamed_items_state_management.dart';
 import 'package:tuple/tuple.dart';
@@ -20,7 +19,7 @@ class MockedDbService {
       // Adding the initial batch
       streamCtrl.add(
         ItemsStateStreamBatch(
-          mockedData.map((e) => Tuple2(DocumentChangeType.added, e)).toList(),
+          mockedData.map((e) => Tuple2(ChangeStatus.added, e)).toList(),
         ),
       );
     };
@@ -33,7 +32,7 @@ class MockedDbService {
           ItemsStateStreamBatch(
             [
               Tuple2(
-                DocumentChangeType.modified,
+                ChangeStatus.modified,
                 ProductModel('A', random.nextDouble() * 100),
               )
             ],
