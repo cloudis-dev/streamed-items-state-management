@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
@@ -9,7 +9,7 @@ import 'package:tuple/tuple.dart';
 
 /// Representation of a batch received by a stream that can be paginated.
 class PagedItemsStateStreamBatch<T, E> {
-  final List<Tuple3<DocumentChangeType, E, T>> batch;
+  final List<Tuple3<ChangeStatus, E, T>> batch;
 
   PagedItemsStateStreamBatch(this.batch);
 }

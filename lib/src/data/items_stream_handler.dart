@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
@@ -125,26 +125,24 @@ class ItemsStreamHandler<T> {
   /// and return the updated [ItemsState].
   ItemsState<T> _createUpdatedState(
     ItemsState<T> currentItemsState,
-    List<Tuple2<DocumentChangeType, T>> data,
+    List<Tuple2<ChangeStatus, T>> data,
     ItemsHandler itemsHandler,
   ) {
     if (data == null || data.isEmpty) {
       currentItemsState =
           currentItemsState.copyWith(status: ItemsStateStatus.allLoaded);
     } else {
-      final removedItems =
-          _getItemsByChangeType(data, DocumentChangeType.removed);
+      final removedItems = _getItemsByChangeType(data, ChangeStatus.removed);
       currentItemsState = currentItemsState.copyWith(
           items:
               itemsHandler.removeItems(currentItemsState.items, removedItems));
 
-      final modifiedItems =
-          _getItemsByChangeType(data, DocumentChangeType.modified);
+      final modifiedItems = _getItemsByChangeType(data, ChangeStatus.modified);
       currentItemsState = currentItemsState.copyWith(
           items:
               itemsHandler.updateItems(currentItemsState.items, modifiedItems));
 
-      final addedItems = _getItemsByChangeType(data, DocumentChangeType.added);
+      final addedItems = _getItemsByChangeType(data, ChangeStatus.added);
       currentItemsState = currentItemsState.copyWith(
         items: itemsHandler.addItems(currentItemsState.items, addedItems),
       );
@@ -158,8 +156,8 @@ class ItemsStreamHandler<T> {
 
   /// Get items from the batch of the given changeType.
   List<T> _getItemsByChangeType(
-    List<Tuple2<DocumentChangeType, T>> data,
-    DocumentChangeType changeType,
+    List<Tuple2<ChangeStatus, T>> data,
+    ChangeStatus changeType,
   ) =>
       data
           .where((element) => element.item1 == changeType)
