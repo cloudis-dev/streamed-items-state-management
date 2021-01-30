@@ -12,7 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
   tuple: ^1.0.3
-  cloud_firestore: ^0.16.0
   sliver_tools: ^0.1.10+1
 
 dev_dependencies:
