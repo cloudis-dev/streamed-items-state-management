@@ -351,8 +351,8 @@ void main() {
                 recoveryAttemptDelaySeconds: recoveryDelay,
               );
 
-              Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100)).then((_) =>
-                  _completer.completeError(Exception(
+              Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100))
+                  .then((_) => _completer.completeError(Exception(
                       'Should throw an CreateStreamMustCreateNewInstanceException')));
             },
             (err, _) {
