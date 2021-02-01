@@ -207,5 +207,34 @@ void main() {
     },
   );
 
-  test('ItemsStreamHandler initial batch error.', () {});
+  test('ItemsStreamHandler initial batch error.', () {
+    final streamCreator = _StreamCreator<int>((streamCtrl) {
+      streamCtrl..addError(Exception());
+    });
+
+    final itemsHandler =
+        ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
+    var itemsState = ItemsState<int>.empty();
+
+    void onDataUpdate(
+      ItemsState<int> newItemsState, {
+      @required bool isInitialStreamBatch,
+      @required bool hasError,
+    }) {
+      itemsState = newItemsState;
+
+      expect(newItemsState.items, []);
+      expect(newItemsState.isDoneAndEmpty, false);
+      expect(itemsState.status, ItemsStateStatus.error);
+      expect(isInitialStreamBatch, true);
+      expect(hasError, true);
+    }
+
+    ItemsStreamHandler<int>.listen(
+      getCurrentItemsState: () => itemsState,
+      itemsHandler: itemsHandler,
+      createStream: streamCreator.createStream,
+      onItemsStateUpdated: onDataUpdate,
+    );
+  });
 }
