@@ -109,7 +109,103 @@ void main() {
   );
 
   test(
-    'ItemsStreamHandler error recovery',
-    () {},
+    'ItemsStreamHandler update error recovery',
+    () async {
+      final _completer = Completer();
+      var counter = 0;
+
+      final streamCreator = _StreamCreator<int>((streamCtrl) {
+        if (counter == 0) {
+          streamCtrl
+            ..add(
+              ItemsStateStreamBatch(
+                [
+                  Tuple2(ChangeStatus.added, 1),
+                  Tuple2(ChangeStatus.added, 2),
+                ],
+              ),
+            )
+            ..addError(Exception());
+        } else if (counter == 1) {
+          streamCtrl
+            ..add(
+              ItemsStateStreamBatch(
+                [
+                  Tuple2(ChangeStatus.added, 1),
+                  Tuple2(ChangeStatus.added, 3),
+                  Tuple2(ChangeStatus.added, 5),
+                ],
+              ),
+            )
+            ..add(ItemsStateStreamBatch([
+              Tuple2(ChangeStatus.removed, 1),
+            ])) // this is counter 2
+            ..addError(Exception());
+        } else if (counter == 3) {
+          counter++;
+          streamCtrl..addError(Exception());
+        } else if (counter == 4) {
+          counter++;
+          streamCtrl..addError(Exception());
+        } else if (counter == 5) {
+          fail(
+              'This should not execute because there are only 2 recovery attempts');
+        }
+      });
+
+      final itemsHandler =
+          ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
+      var itemsState = ItemsState<int>.empty();
+
+      void onDataUpdate(
+        ItemsState<int> newItemsState, {
+        @required bool isInitialStreamBatch,
+        @required bool hasError,
+      }) {
+        itemsState = newItemsState;
+
+        if (counter == 0) {
+          expect(newItemsState.items, [1, 2]);
+          expect(newItemsState.isDoneAndEmpty, false);
+          expect(itemsState.status, ItemsStateStatus.waiting);
+          expect(isInitialStreamBatch, true);
+          expect(hasError, false);
+        } else if (counter == 1) {
+          expect(newItemsState.items, [1, 3, 5]);
+          expect(newItemsState.isDoneAndEmpty, false);
+          expect(itemsState.status, ItemsStateStatus.waiting);
+          expect(isInitialStreamBatch, false);
+          expect(hasError, false);
+        } else if (counter == 2) {
+          expect(newItemsState.items, [3, 5]);
+          expect(newItemsState.isDoneAndEmpty, false);
+          expect(itemsState.status, ItemsStateStatus.waiting);
+          expect(isInitialStreamBatch, false);
+          expect(hasError, false);
+
+          _completer.complete();
+        }
+
+        counter++;
+      }
+
+      const recoveryDelay = 1;
+      ItemsStreamHandler<int>.listen(
+        getCurrentItemsState: () => itemsState,
+        itemsHandler: itemsHandler,
+        createStream: streamCreator.createStream,
+        onItemsStateUpdated: onDataUpdate,
+        streamUpdateFailRecoveryAttemptsCount: 2,
+        recoveryAttemptDelaySeconds: recoveryDelay,
+      );
+
+      await _completer.future;
+      // wait for all the recovery attemps + 1.
+      // In case another recovery attemt comes, it fails.
+      await Future.delayed(
+          Duration(milliseconds: (recoveryDelay * 1000 + 100) * 4));
+    },
   );
+
+  test('ItemsStreamHandler initial batch error.', () {});
 }
