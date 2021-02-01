@@ -15,8 +15,11 @@ class _StreamCreator<T> {
 
   _StreamCreator(this.onListenCallback);
 
-  Stream<ItemsStateStreamBatch<T>> createStream() {
-    final streamCtrl = StreamController<ItemsStateStreamBatch<T>>();
+  Stream<ItemsStateStreamBatch<T>> createStream({bool isBroadcast = false}) {
+    final streamCtrl = isBroadcast
+        ? StreamController<ItemsStateStreamBatch<T>>.broadcast()
+        : StreamController<ItemsStateStreamBatch<T>>();
+
     streamCtrl.onCancel = () async => await streamCtrl.close();
     // ignore: cascade_invocations
     streamCtrl.onListen = () => onListenCallback(streamCtrl);
@@ -24,6 +27,8 @@ class _StreamCreator<T> {
     return streamCtrl.stream;
   }
 }
+
+const recoveryDelay = 1;
 
 void main() {
   test(
@@ -189,7 +194,6 @@ void main() {
         counter++;
       }
 
-      const recoveryDelay = 1;
       ItemsStreamHandler<int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
@@ -294,7 +298,6 @@ void main() {
         counter++;
       }
 
-      const recoveryDelay = 1;
       final handler = ItemsStreamHandler<int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
@@ -307,6 +310,62 @@ void main() {
       await _completer.future;
       await handler.dispose();
       await Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100));
+    },
+  );
+
+  test(
+    'ItemsStreamHandler createStream function has to return new instance every call.',
+    () async {
+      expect(
+        () async {
+          final _completer = Completer();
+
+          runZonedGuarded(
+            () {
+              final stream = _StreamCreator<int>((streamCtrl) {
+                streamCtrl
+                  ..add(ItemsStateStreamBatch([
+                    Tuple2(ChangeStatus.added, 1),
+                  ]))
+                  ..addError(Exception());
+              }).createStream(isBroadcast: true);
+
+              final itemsHandler =
+                  ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
+              var itemsState = ItemsState<int>.empty();
+
+              void onDataUpdate(
+                ItemsState<int> newItemsState, {
+                @required bool isInitialStreamBatch,
+                @required bool hasError,
+              }) {
+                itemsState = newItemsState;
+              }
+
+              ItemsStreamHandler<int>.listen(
+                getCurrentItemsState: () => itemsState,
+                itemsHandler: itemsHandler,
+                createStream: () => stream,
+                onItemsStateUpdated: onDataUpdate,
+                streamUpdateFailRecoveryAttemptsCount: 2,
+                recoveryAttemptDelaySeconds: recoveryDelay,
+              );
+
+              Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100)).then((_) =>
+                  _completer.completeError(Exception(
+                      'Should throw an CreateStreamMustCreateNewInstanceException')));
+            },
+            (err, _) {
+              _completer.completeError(err);
+            },
+          );
+
+          await _completer.future;
+        },
+        throwsA(
+          isInstanceOf<CreateStreamMustCreateNewInstanceException>(),
+        ),
+      );
     },
   );
 }
