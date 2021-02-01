@@ -19,7 +19,7 @@ class MyApp extends HookWidget {
           slivers: [
             SliverPagedList<ProductModel>(
               itemsState: itemsState,
-              itemBuilder: (context, item) => ListTile(
+              itemBuilder: (context, item, _) => ListTile(
                 title: Text(item.uniqueId),
                 subtitle: Text('Price: ${item.price}'),
               ),

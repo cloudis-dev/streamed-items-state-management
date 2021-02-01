@@ -7,6 +7,18 @@ import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
 import 'package:tuple/tuple.dart';
 
+class CreateStreamMustCreateNewInstanceException implements Exception {
+  final String message;
+  CreateStreamMustCreateNewInstanceException(
+      {this.message = 'createStream method have to create a new stream!'})
+      : super();
+
+  @override
+  String toString() {
+    return 'CreateStreamMustCreateNewInstanceException{message: $message}';
+  }
+}
+
 /// Callback used to notify about the [ItemsState] update.
 /// The update happens when a stream sends new data.
 typedef OnItemsStateUpdated<T> = void Function(
@@ -19,6 +31,7 @@ typedef OnItemsStateUpdated<T> = void Function(
 /// Handles the stream subscription, [ItemsState] updates and stream error handling.
 class ItemsStreamHandler<T> {
   StreamSubscription<ItemsStateStreamBatch<T>> _streamSubscription;
+  Stream<ItemsStateStreamBatch<T>> _lastStream;
 
   /// This is used in case the recovery attempt occurs after the dispose.
   bool _isDisposed = false;
@@ -38,7 +51,7 @@ class ItemsStreamHandler<T> {
     @required ItemsState<T> Function() getCurrentItemsState,
     @required ItemsHandler itemsHandler,
     @required Stream<ItemsStateStreamBatch<T>> Function() createStream,
-    @required OnItemsStateUpdated onItemsStateUpdated,
+    @required OnItemsStateUpdated<T> onItemsStateUpdated,
     final int streamUpdateFailRecoveryAttemptsCount = 2,
     final int recoveryAttemptDelaySeconds = 5,
   }) {
@@ -46,12 +59,29 @@ class ItemsStreamHandler<T> {
     var remainingRecoveryAttempts = streamUpdateFailRecoveryAttemptsCount;
 
     /// Stream onData handler.
-    void onData(ItemsStateStreamBatch<T> batch) {
-      final newState = _createUpdatedState(
-        getCurrentItemsState(),
-        batch.batch,
-        itemsHandler,
-      );
+    /// [shouldReplaceState] parameter is used in case the new data
+    /// should replace the current state.
+    ///
+    /// It is in the case when an update error recovery succeeds.
+    /// The new stream's initial batch has the last version of the items,
+    /// so there is no need to update the current state (also there are cases where this is incorrect).
+    /// Replacement is needed in this case.
+    void onData(
+      ItemsStateStreamBatch<T> batch, {
+      @required bool shouldReplaceState,
+    }) {
+      final newState = shouldReplaceState
+          ? _createUpdatedState(
+              ItemsState<T>.empty(),
+              batch.batch,
+              itemsHandler,
+            )
+          : _createUpdatedState(
+              getCurrentItemsState(),
+              batch.batch,
+              itemsHandler,
+            );
+
       onItemsStateUpdated(
         newState,
         isInitialStreamBatch: isInitialBatch,
@@ -65,7 +95,8 @@ class ItemsStreamHandler<T> {
     /// Handles the initial batch errors and also the recovering in update batches.
     void onError(
       dynamic err,
-      StreamSubscription<ItemsStateStreamBatch<T>> Function()
+      StreamSubscription<ItemsStateStreamBatch<T>> Function(
+              bool shouldReplaceState)
           createSubscription,
     ) async {
       if (isInitialBatch) {
@@ -100,20 +131,32 @@ class ItemsStreamHandler<T> {
         ).then(
           (value) {
             if (_isDisposed) return;
-            _streamSubscription = createSubscription();
+            _streamSubscription = createSubscription(true);
           },
         );
       }
     }
 
-    StreamSubscription<ItemsStateStreamBatch<T>> createSubscription() {
-      return createStream().listen(
-        onData,
+    StreamSubscription<ItemsStateStreamBatch<T>> createSubscription(
+      // ignore: avoid_positional_boolean_parameters
+      bool shouldReplaceState,
+    ) {
+      final stream = createStream();
+      if (_lastStream != null && identical(stream, _lastStream)) {
+        throw CreateStreamMustCreateNewInstanceException();
+      }
+
+      _lastStream = stream;
+      return stream.listen(
+        (data) {
+          onData(data, shouldReplaceState: shouldReplaceState);
+          shouldReplaceState = false;
+        },
         onError: (err) => onError(err, createSubscription),
       );
     }
 
-    _streamSubscription = createSubscription();
+    _streamSubscription = createSubscription(false);
   }
 
   Future<void> dispose() async {
