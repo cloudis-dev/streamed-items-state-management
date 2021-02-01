@@ -207,34 +207,106 @@ void main() {
     },
   );
 
-  test('ItemsStreamHandler initial batch error.', () {
-    final streamCreator = _StreamCreator<int>((streamCtrl) {
-      streamCtrl..addError(Exception());
-    });
+  test(
+    'ItemsStreamHandler initial batch error.',
+    () {
+      final streamCreator = _StreamCreator<int>((streamCtrl) {
+        streamCtrl..addError(Exception());
+      });
 
-    final itemsHandler =
-        ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
-    var itemsState = ItemsState<int>.empty();
+      final itemsHandler =
+          ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
+      var itemsState = ItemsState<int>.empty();
 
-    void onDataUpdate(
-      ItemsState<int> newItemsState, {
-      @required bool isInitialStreamBatch,
-      @required bool hasError,
-    }) {
-      itemsState = newItemsState;
+      void onDataUpdate(
+        ItemsState<int> newItemsState, {
+        @required bool isInitialStreamBatch,
+        @required bool hasError,
+      }) {
+        itemsState = newItemsState;
 
-      expect(newItemsState.items, []);
-      expect(newItemsState.isDoneAndEmpty, false);
-      expect(itemsState.status, ItemsStateStatus.error);
-      expect(isInitialStreamBatch, true);
-      expect(hasError, true);
-    }
+        expect(newItemsState.items, []);
+        expect(newItemsState.isDoneAndEmpty, false);
+        expect(itemsState.status, ItemsStateStatus.error);
+        expect(isInitialStreamBatch, true);
+        expect(hasError, true);
+      }
 
-    ItemsStreamHandler<int>.listen(
-      getCurrentItemsState: () => itemsState,
-      itemsHandler: itemsHandler,
-      createStream: streamCreator.createStream,
-      onItemsStateUpdated: onDataUpdate,
-    );
-  });
+      ItemsStreamHandler<int>.listen(
+        getCurrentItemsState: () => itemsState,
+        itemsHandler: itemsHandler,
+        createStream: streamCreator.createStream,
+        onItemsStateUpdated: onDataUpdate,
+      );
+    },
+  );
+
+  test(
+    'ItemsStreamHandler update batch error recovery waiting dispose.',
+    () async {
+      final _completer = Completer();
+      var counter = 0;
+
+      final streamCreator = _StreamCreator<int>((streamCtrl) {
+        if (counter == 0) {
+          streamCtrl
+            ..add(ItemsStateStreamBatch([
+              Tuple2(ChangeStatus.added, 1),
+              Tuple2(ChangeStatus.added, 2),
+            ]))
+            ..addError(Exception());
+        } else if (counter == 1) {
+          streamCtrl
+            ..add(ItemsStateStreamBatch([
+              Tuple2(ChangeStatus.added, 1),
+              Tuple2(ChangeStatus.added, 2),
+              Tuple2(ChangeStatus.added, 3),
+            ]));
+        }
+      });
+
+      final itemsHandler =
+          ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
+      var itemsState = ItemsState<int>.empty();
+
+      void onDataUpdate(
+        ItemsState<int> newItemsState, {
+        @required bool isInitialStreamBatch,
+        @required bool hasError,
+      }) {
+        itemsState = newItemsState;
+
+        if (counter == 0) {
+          expect(newItemsState.items, [1, 2]);
+          expect(newItemsState.isDoneAndEmpty, false);
+          expect(itemsState.status, ItemsStateStatus.waiting);
+          expect(isInitialStreamBatch, true);
+          expect(hasError, false);
+
+          Future.delayed(Duration(milliseconds: 100)).then(
+            (value) => _completer.complete(),
+          );
+        } else if (counter == 1) {
+          fail(
+              'The ItemsStreamHandler has been disposed, it cannot recover from an error.');
+        }
+
+        counter++;
+      }
+
+      const recoveryDelay = 1;
+      final handler = ItemsStreamHandler<int>.listen(
+        getCurrentItemsState: () => itemsState,
+        itemsHandler: itemsHandler,
+        createStream: streamCreator.createStream,
+        onItemsStateUpdated: onDataUpdate,
+        streamUpdateFailRecoveryAttemptsCount: 2,
+        recoveryAttemptDelaySeconds: recoveryDelay,
+      );
+
+      await _completer.future;
+      await handler.dispose();
+      await Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100));
+    },
+  );
 }
