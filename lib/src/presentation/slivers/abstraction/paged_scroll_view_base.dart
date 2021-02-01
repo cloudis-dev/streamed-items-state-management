@@ -43,7 +43,7 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
                 requestData();
               }
 
-              return itemBuilder(context, itemsState.items[index]);
+              return itemBuilder(context, itemsState.items[index], index);
             },
             childCount: itemsState.items.length,
           ),

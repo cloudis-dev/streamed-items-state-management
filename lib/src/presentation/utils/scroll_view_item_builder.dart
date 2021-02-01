@@ -4,4 +4,5 @@ import 'package:flutter/material.dart';
 typedef ScrollViewItemBuilder<T> = Widget Function(
   BuildContext context,
   T item,
+  int index,
 );
