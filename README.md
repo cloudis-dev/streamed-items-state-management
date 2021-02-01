@@ -28,5 +28,4 @@ instead of the `SingleStreamItemsStateNotifier`.
 
 
 ## TODO
-- `ItemsStreamHandler` tests
 - better logging
