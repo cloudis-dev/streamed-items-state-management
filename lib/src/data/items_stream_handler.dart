@@ -100,6 +100,9 @@ class ItemsStreamHandler<T> {
           createSubscription,
     ) async {
       if (isInitialBatch) {
+        print(
+            'An error occured when fetching the initial items batch. Error: $err');
+
         onItemsStateUpdated(
           getCurrentItemsState().copyWith(status: ItemsStateStatus.error),
           isInitialStreamBatch: isInitialBatch,
