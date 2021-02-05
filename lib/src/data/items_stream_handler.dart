@@ -95,13 +95,16 @@ class ItemsStreamHandler<T> {
     /// Handles the initial batch errors and also the recovering in update batches.
     void onError(
       dynamic err,
+      dynamic stacktrace,
       StreamSubscription<ItemsStateStreamBatch<T>> Function(
               bool shouldReplaceState)
           createSubscription,
     ) async {
       if (isInitialBatch) {
-        print(
-            'An error occured when fetching the initial items batch. Error: $err');
+        print('''An error occured when fetching the initial items batch. 
+            Error: $err.
+            Stacktrace: $stacktrace
+            ''');
 
         onItemsStateUpdated(
           getCurrentItemsState().copyWith(status: ItemsStateStatus.error),
@@ -110,12 +113,21 @@ class ItemsStreamHandler<T> {
         );
       } else {
         if (remainingRecoveryAttempts <= 0) {
-          print(
-            '''There was an error when the items stream received updates.
-            No more recovery attempts remaining.
-            Stream will receive no updates anymore.
-            Error: $err''',
-          );
+          try {
+            try {
+              print(
+                  '''There was an error when the items stream received updates.
+                No more recovery attempts remaining.
+                Stream will receive no updates anymore.
+                Error: $err
+                Stacktrace: $stacktrace
+                ''');
+            } catch (e, s) {
+              print(s);
+            }
+          } catch (e, s) {
+            print(s);
+          }
           return;
         }
 
@@ -126,7 +138,9 @@ class ItemsStreamHandler<T> {
           '''There was an error when the items stream received updates.
             Trying to recover in $recoveryAttemptDelaySeconds seconds.
             Recovery attempts remaining $remainingRecoveryAttempts.
-            Error: $err''',
+            Error: $err
+            Stacktrace: $stacktrace
+            ''',
         );
 
         await Future.delayed(
@@ -155,7 +169,8 @@ class ItemsStreamHandler<T> {
           onData(data, shouldReplaceState: shouldReplaceState);
           shouldReplaceState = false;
         },
-        onError: (err) => onError(err, createSubscription),
+        onError: (err, stacktrace) =>
+            onError(err, stacktrace, createSubscription),
       );
     }
 
