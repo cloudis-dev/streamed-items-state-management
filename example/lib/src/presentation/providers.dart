@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final mockedDbServiceProvider = Provider((_) => MockedDbService());
 
-final allProductsStateProvider =
+final AutoDisposeChangeNotifierProvider<ProductsStateNotifier>? allProductsStateProvider =
     ChangeNotifierProvider.autoDispose<ProductsStateNotifier>(
   (ref) {
     final dbService = ref.watch(mockedDbServiceProvider);

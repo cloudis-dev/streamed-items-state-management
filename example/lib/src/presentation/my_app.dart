@@ -11,7 +11,7 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final itemsState = useProvider(
-        allProductsStateProvider.select((value) => value.itemsState));
+        allProductsStateProvider!.select((value) => value.itemsState));
 
     return MaterialApp(
       home: Scaffold(
@@ -23,7 +23,7 @@ class MyApp extends HookWidget {
                 title: Text(item.uniqueId),
                 subtitle: Text('Price: ${item.price}'),
               ),
-              requestData: context.read(allProductsStateProvider).requestData,
+              requestData: context.read(allProductsStateProvider!).requestData,
             )
           ],
         ),
