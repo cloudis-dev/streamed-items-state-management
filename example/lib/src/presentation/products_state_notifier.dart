@@ -10,7 +10,8 @@ class ProductsStateNotifier
   ProductsStateNotifier(
     Stream<ItemsStateStreamBatch> Function() createStream,
   ) : super(
-          createStream as Stream<ItemsStateStreamBatch<ProductModel>> Function(),
+          createStream as Stream<ItemsStateStreamBatch<ProductModel>>
+              Function(),
           ProductsItemsHandler(),
         );
 }
