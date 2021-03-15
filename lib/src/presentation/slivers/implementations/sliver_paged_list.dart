@@ -4,7 +4,7 @@ import 'package:streamed_items_state_management/src/presentation/slivers/abstrac
 import 'package:streamed_items_state_management/src/presentation/utils/scroll_view_error_widget_builder.dart';
 import 'package:streamed_items_state_management/src/presentation/utils/scroll_view_item_builder.dart';
 
-class SliverPagedList<T> extends PagedScrollViewBase {
+class SliverPagedList<T> extends PagedScrollViewBase<T> {
   SliverPagedList({
     Key key,
     int cacheItemsCountExtent,

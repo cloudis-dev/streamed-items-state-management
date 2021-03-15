@@ -29,7 +29,10 @@ typedef OnItemsStateUpdated<T> = void Function(
 
 /// Takes care of the stream handling.
 /// Handles the stream subscription, [ItemsState] updates and stream error handling.
-class ItemsStreamHandler<T> {
+///
+/// [E] is the item unique selector type.
+/// The field's type based on which is the distinction of items preserved.
+class ItemsStreamHandler<T, E> {
   StreamSubscription<ItemsStateStreamBatch<T>> _streamSubscription;
   Stream<ItemsStateStreamBatch<T>> _lastStream;
 
@@ -49,7 +52,7 @@ class ItemsStreamHandler<T> {
   /// When all the recovery attempts fail, the stream is canceled and updates are disabled.
   ItemsStreamHandler.listen({
     @required ItemsState<T> Function() getCurrentItemsState,
-    @required ItemsHandler itemsHandler,
+    @required ItemsHandler<T, E> itemsHandler,
     @required Stream<ItemsStateStreamBatch<T>> Function() createStream,
     @required OnItemsStateUpdated<T> onItemsStateUpdated,
     final int streamUpdateFailRecoveryAttemptsCount = 2,
@@ -187,7 +190,7 @@ class ItemsStreamHandler<T> {
   ItemsState<T> _createUpdatedState(
     ItemsState<T> currentItemsState,
     List<Tuple2<ChangeStatus, T>> data,
-    ItemsHandler itemsHandler,
+    ItemsHandler<T, E> itemsHandler,
   ) {
     if (data == null || data.isEmpty) {
       currentItemsState =

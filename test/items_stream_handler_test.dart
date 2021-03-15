@@ -100,7 +100,7 @@ void main() {
         counter++;
       }
 
-      ItemsStreamHandler<Tuple2<String, int>>.listen(
+      ItemsStreamHandler<Tuple2<String, int>, String>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -194,7 +194,7 @@ void main() {
         counter++;
       }
 
-      ItemsStreamHandler<int>.listen(
+      ItemsStreamHandler<int, int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -236,7 +236,7 @@ void main() {
         expect(hasError, true);
       }
 
-      ItemsStreamHandler<int>.listen(
+      ItemsStreamHandler<int, int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -298,7 +298,7 @@ void main() {
         counter++;
       }
 
-      final handler = ItemsStreamHandler<int>.listen(
+      final handler = ItemsStreamHandler<int, int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -342,7 +342,7 @@ void main() {
                 itemsState = newItemsState;
               }
 
-              ItemsStreamHandler<int>.listen(
+              ItemsStreamHandler<int, int>.listen(
                 getCurrentItemsState: () => itemsState,
                 itemsHandler: itemsHandler,
                 createStream: () => stream,

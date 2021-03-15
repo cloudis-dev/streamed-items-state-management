@@ -4,7 +4,9 @@ import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
 import 'package:streamed_items_state_management/src/data/items_stream_handler.dart';
 
-abstract class StreamedItemsStateNotifierBase<T> extends ChangeNotifier {
+/// [E] is the item unique selector type.
+/// The field's type based on which is the distinction of items preserved.
+abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
   StreamedItemsStateNotifierBase(this._itemsHandler);
 
   ItemsState<T> _itemsState = ItemsState.empty();
@@ -13,9 +15,9 @@ abstract class StreamedItemsStateNotifierBase<T> extends ChangeNotifier {
   set itemsState(ItemsState<T> value) => _itemsState = value;
   ItemsState<T> get itemsState => _itemsState;
 
-  final ItemsHandler _itemsHandler;
+  final ItemsHandler<T, E> _itemsHandler;
 
-  final List<ItemsStreamHandler<T>> _handlersList = [];
+  final List<ItemsStreamHandler<T, E>> _handlersList = [];
 
   @protected
   Stream<ItemsStateStreamBatch<T>> createStream();
