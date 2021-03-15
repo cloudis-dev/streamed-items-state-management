@@ -1,6 +1,7 @@
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
+import 'package:streamed_items_state_management/src/data/items_stream_handler.dart';
 import 'package:streamed_items_state_management/src/presentation/view_models/abstraction/streamed_items_state_notifier_base.dart';
 
 /// This is used for managing the items
@@ -13,7 +14,8 @@ class SingleStreamItemsStateNotifier<T, E>
   SingleStreamItemsStateNotifier(
     this._createStream,
     ItemsHandler<T, E> itemsHandler,
-  ) : super(itemsHandler);
+    OnErrorCallback errorCallback,
+  ) : super(itemsHandler, errorCallback);
 
   final Stream<ItemsStateStreamBatch<T>> Function() _createStream;
   bool _hasRequestedData = false;
