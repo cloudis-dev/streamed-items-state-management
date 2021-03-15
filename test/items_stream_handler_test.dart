@@ -104,6 +104,9 @@ void main() {
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
         onItemsStateUpdated: onDataUpdate,
+        onErrorCallback: (_, __) {
+          fail('An error shouldn\'t appear here');
+        },
       );
 
       expect(itemsState.items, []);
@@ -198,6 +201,9 @@ void main() {
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
         onItemsStateUpdated: onDataUpdate,
+        onErrorCallback: (_, __) {
+          expect(counter, 5);
+        },
         streamUpdateFailRecoveryAttemptsCount: 2,
         recoveryAttemptDelaySeconds: recoveryDelay,
       );
@@ -240,6 +246,11 @@ void main() {
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
         onItemsStateUpdated: onDataUpdate,
+        onErrorCallback: (_, __) {
+          expect(itemsState.items, []);
+          expect(itemsState.isDoneAndEmpty, false);
+          expect(itemsState.status, ItemsStateStatus.error);
+        },
       );
     },
   );
@@ -302,6 +313,10 @@ void main() {
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
         onItemsStateUpdated: onDataUpdate,
+        onErrorCallback: (_, __) {
+          fail(
+              'ItemsStateHandler was disposed, it shouln\'t call error callback.');
+        },
         streamUpdateFailRecoveryAttemptsCount: 2,
         recoveryAttemptDelaySeconds: recoveryDelay,
       );
@@ -315,56 +330,53 @@ void main() {
   test(
     'ItemsStreamHandler createStream function has to return new instance every call.',
     () async {
-      expect(
-        () async {
-          final _completer = Completer();
+      final _completer = Completer();
 
-          runZonedGuarded(
-            () {
-              final stream = _StreamCreator<int>((streamCtrl) {
-                streamCtrl
-                  ..add(ItemsStateStreamBatch([
-                    Tuple2(ChangeStatus.added, 1),
-                  ]))
-                  ..addError(Exception());
-              }).createStream(isBroadcast: true);
+      runZonedGuarded(
+        () {
+          final stream = _StreamCreator<int>((streamCtrl) {
+            streamCtrl
+              ..add(ItemsStateStreamBatch([
+                Tuple2(ChangeStatus.added, 1),
+              ]))
+              ..addError(Exception());
+          }).createStream(isBroadcast: true);
 
-              final itemsHandler =
-                  ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
-              var itemsState = ItemsState<int>.empty();
+          final itemsHandler =
+              ItemsHandler<int, int>((a, b) => a.compareTo(b), (a) => a);
+          var itemsState = ItemsState<int>.empty();
 
-              void onDataUpdate(
-                ItemsState<int> newItemsState, {
-                required bool isInitialStreamBatch,
-                required bool hasError,
-              }) {
-                itemsState = newItemsState;
-              }
+          void onDataUpdate(
+            ItemsState<int> newItemsState, {
+            required bool isInitialStreamBatch,
+            required bool hasError,
+          }) {
+            itemsState = newItemsState;
+          }
 
-              ItemsStreamHandler<int, int>.listen(
-                getCurrentItemsState: () => itemsState,
-                itemsHandler: itemsHandler,
-                createStream: () => stream,
-                onItemsStateUpdated: onDataUpdate,
-                streamUpdateFailRecoveryAttemptsCount: 2,
-                recoveryAttemptDelaySeconds: recoveryDelay,
-              );
-
-              Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100))
-                  .then((_) => _completer.completeError(Exception(
-                      'Should throw an CreateStreamMustCreateNewInstanceException')));
+          ItemsStreamHandler<int, int>.listen(
+            getCurrentItemsState: () => itemsState,
+            itemsHandler: itemsHandler,
+            createStream: () => stream,
+            onItemsStateUpdated: onDataUpdate,
+            onErrorCallback: (err, __) {
+              expect(err is CreateStreamMustCreateNewInstanceException, true);
+              _completer.complete();
             },
-            (err, _) {
-              _completer.completeError(err);
-            },
+            streamUpdateFailRecoveryAttemptsCount: 2,
+            recoveryAttemptDelaySeconds: recoveryDelay,
           );
 
-          await _completer.future;
+          Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100))
+              .then((_) => _completer.completeError(Exception(
+                  'Should throw an CreateStreamMustCreateNewInstanceException')));
         },
-        throwsA(
-          isInstanceOf<CreateStreamMustCreateNewInstanceException>(),
-        ),
+        (err, _) {
+          _completer.completeError(err);
+        },
       );
+
+      await _completer.future;
     },
   );
 }

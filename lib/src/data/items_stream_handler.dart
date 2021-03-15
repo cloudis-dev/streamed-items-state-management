@@ -26,6 +26,9 @@ typedef OnItemsStateUpdated<T> = void Function(
   required bool hasError,
 });
 
+/// Callback used to propagate an error.
+typedef OnErrorCallback = void Function(dynamic err, dynamic stacktrace);
+
 /// Takes care of the stream handling.
 /// Handles the stream subscription, [ItemsState] updates and stream error handling.
 ///
@@ -54,6 +57,7 @@ class ItemsStreamHandler<T, E> {
     required ItemsHandler<T, E> itemsHandler,
     required Stream<ItemsStateStreamBatch<T>> Function() createStream,
     required OnItemsStateUpdated<T> onItemsStateUpdated,
+    required OnErrorCallback onErrorCallback,
     final int streamUpdateFailRecoveryAttemptsCount = 2,
     final int recoveryAttemptDelaySeconds = 5,
   }) {
@@ -113,23 +117,18 @@ class ItemsStreamHandler<T, E> {
           isInitialStreamBatch: isInitialBatch,
           hasError: true,
         );
+
+        onErrorCallback(err, stacktrace);
       } else {
         if (remainingRecoveryAttempts <= 0) {
-          try {
-            try {
-              print(
-                  '''There was an error when the items stream received updates.
+          print('''There was an error when the items stream received updates.
                 No more recovery attempts remaining.
                 Stream will receive no updates anymore.
                 Error: $err
                 Stacktrace: $stacktrace
                 ''');
-            } catch (e, s) {
-              print(s);
-            }
-          } catch (e, s) {
-            print(s);
-          }
+
+          onErrorCallback(err, stacktrace);
           return;
         }
 
@@ -152,7 +151,9 @@ class ItemsStreamHandler<T, E> {
             if (_isDisposed) return;
             _streamSubscription = createSubscription(true);
           },
-        );
+        ).catchError((err, stacktrace) {
+          onErrorCallback(err, stacktrace);
+        });
       }
     }
 

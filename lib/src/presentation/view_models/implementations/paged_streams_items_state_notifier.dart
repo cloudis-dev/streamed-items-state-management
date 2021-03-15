@@ -2,6 +2,7 @@ import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
+import 'package:streamed_items_state_management/src/data/items_stream_handler.dart';
 import 'package:streamed_items_state_management/src/presentation/slivers/abstraction/paged_scroll_view_base.dart';
 import 'package:streamed_items_state_management/src/presentation/view_models/abstraction/streamed_items_state_notifier_base.dart';
 import 'package:tuple/tuple.dart';
@@ -27,7 +28,8 @@ class PagedStreamsItemsStateNotifier<T, E, Q>
   PagedStreamsItemsStateNotifier(
     this._createStream,
     ItemsHandler<T, Q> itemsHandler,
-  ) : super(itemsHandler);
+    OnErrorCallback errorCallback,
+  ) : super(itemsHandler, errorCallback);
 
   final Stream<PagedItemsStateStreamBatch<T, E>> Function(E? fromPageKey)
       _createStream;

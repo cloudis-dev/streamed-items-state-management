@@ -7,7 +7,7 @@ import 'package:streamed_items_state_management/src/data/items_stream_handler.da
 /// [E] is the item unique selector type.
 /// The field's type based on which is the distinction of items preserved.
 abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
-  StreamedItemsStateNotifierBase(this._itemsHandler);
+  StreamedItemsStateNotifierBase(this._itemsHandler, this._onErrorCallback);
 
   ItemsState<T> _itemsState = ItemsState.empty();
 
@@ -16,6 +16,9 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
   ItemsState<T> get itemsState => _itemsState;
 
   final ItemsHandler<T, E> _itemsHandler;
+
+  /// This can be used for error logging for example.
+  final void Function(dynamic err, dynamic stacktrace) _onErrorCallback;
 
   final List<ItemsStreamHandler<T, E>> _handlersList = [];
 
@@ -42,6 +45,7 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
             itemsHandler: _itemsHandler,
             createStream: createStream,
             onItemsStateUpdated: onDataUpdate,
+            onErrorCallback: _onErrorCallback,
           ),
         );
       },
