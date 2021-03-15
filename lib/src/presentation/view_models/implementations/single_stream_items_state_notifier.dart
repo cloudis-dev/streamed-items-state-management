@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';

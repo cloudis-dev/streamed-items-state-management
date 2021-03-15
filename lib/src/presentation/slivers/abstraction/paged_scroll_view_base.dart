@@ -70,7 +70,7 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
                       ? Column(
                           children: [
                             Icon(Icons.warning),
-                            RaisedButton(
+                            ElevatedButton(
                               onPressed: requestData,
                               child: Icon(Icons.refresh),
                             ),

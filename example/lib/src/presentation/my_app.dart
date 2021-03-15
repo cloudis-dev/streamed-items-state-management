@@ -2,7 +2,7 @@ import 'package:example/src/data/product_model.dart';
 import 'package:example/src/presentation/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:streamed_items_state_management/streamed_items_state_management.dart';
 
 /// Scroll list view with products.

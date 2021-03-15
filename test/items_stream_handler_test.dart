@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';

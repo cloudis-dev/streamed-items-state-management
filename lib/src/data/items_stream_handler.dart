@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
@@ -192,7 +191,7 @@ class ItemsStreamHandler<T, E> {
     List<Tuple2<ChangeStatus, T>> data,
     ItemsHandler<T, E> itemsHandler,
   ) {
-    if (data == null || data.isEmpty) {
+    if (data.isEmpty) {
       currentItemsState =
           currentItemsState.copyWith(status: ItemsStateStatus.allLoaded);
     } else {
