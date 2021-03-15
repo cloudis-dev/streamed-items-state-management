@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
@@ -63,8 +62,8 @@ void main() {
       var counter = 0;
       void onDataUpdate(
         ItemsState<Tuple2<String, int>> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -100,7 +99,7 @@ void main() {
         counter++;
       }
 
-      ItemsStreamHandler<Tuple2<String, int>>.listen(
+      ItemsStreamHandler<Tuple2<String, int>, String>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -164,8 +163,8 @@ void main() {
 
       void onDataUpdate(
         ItemsState<int> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -194,7 +193,7 @@ void main() {
         counter++;
       }
 
-      ItemsStreamHandler<int>.listen(
+      ItemsStreamHandler<int, int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -224,8 +223,8 @@ void main() {
 
       void onDataUpdate(
         ItemsState<int> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -236,7 +235,7 @@ void main() {
         expect(hasError, true);
       }
 
-      ItemsStreamHandler<int>.listen(
+      ItemsStreamHandler<int, int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -275,8 +274,8 @@ void main() {
 
       void onDataUpdate(
         ItemsState<int> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -298,7 +297,7 @@ void main() {
         counter++;
       }
 
-      final handler = ItemsStreamHandler<int>.listen(
+      final handler = ItemsStreamHandler<int, int>.listen(
         getCurrentItemsState: () => itemsState,
         itemsHandler: itemsHandler,
         createStream: streamCreator.createStream,
@@ -336,13 +335,13 @@ void main() {
 
               void onDataUpdate(
                 ItemsState<int> newItemsState, {
-                @required bool isInitialStreamBatch,
-                @required bool hasError,
+                required bool isInitialStreamBatch,
+                required bool hasError,
               }) {
                 itemsState = newItemsState;
               }
 
-              ItemsStreamHandler<int>.listen(
+              ItemsStreamHandler<int, int>.listen(
                 getCurrentItemsState: () => itemsState,
                 itemsHandler: itemsHandler,
                 createStream: () => stream,

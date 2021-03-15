@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:streamed_items_state_management/src/data/change_status.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
@@ -19,20 +18,23 @@ class PagedItemsStateStreamBatch<T, E> {
 /// [E] is the paging parameter type.
 /// E.g it can be [int] representing the last fetched page index.
 ///
+/// [Q] is the item unique selector type.
+/// The field's type based on which is the distinction of items preserved.
+///
 /// The proposed usage is with any [PagedScrollViewBase] instance.
-class PagedStreamsItemsStateNotifier<T, E>
-    extends StreamedItemsStateNotifierBase<T> {
+class PagedStreamsItemsStateNotifier<T, E, Q>
+    extends StreamedItemsStateNotifierBase<T, Q> {
   PagedStreamsItemsStateNotifier(
     this._createStream,
-    ItemsHandler itemsHandler,
+    ItemsHandler<T, Q> itemsHandler,
   ) : super(itemsHandler);
 
-  final Stream<PagedItemsStateStreamBatch<T, E>> Function(E fromPageKey)
+  final Stream<PagedItemsStateStreamBatch<T, E>> Function(E? fromPageKey)
       _createStream;
 
   bool _isFetchingPage = false;
-  E _pageKeyCurrentlyBeingFetched;
-  E _lastFetchedPageKey;
+  E? _pageKeyCurrentlyBeingFetched;
+  E? _lastFetchedPageKey;
 
   @override
   void requestData() {
@@ -45,8 +47,8 @@ class PagedStreamsItemsStateNotifier<T, E>
   @override
   void onDataUpdate(
     ItemsState<T> newItemsState, {
-    @required bool isInitialStreamBatch,
-    @required bool hasError,
+    required bool isInitialStreamBatch,
+    required bool hasError,
   }) {
     if (!hasError && isInitialStreamBatch) {
       _lastFetchedPageKey = _pageKeyCurrentlyBeingFetched;

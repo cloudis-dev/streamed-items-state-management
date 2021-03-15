@@ -24,7 +24,7 @@ class ItemsHandler<T, E> {
   /// Return false to remove the item or otherwise return true.
   ///
   /// By default, no filter is applied.
-  final bool Function(T item) itemFilterTest;
+  final bool Function(T item)? itemFilterTest;
 
   final int Function(T a, T b) sortCompare;
 

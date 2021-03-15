@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
@@ -6,11 +5,14 @@ import 'package:streamed_items_state_management/src/presentation/view_models/abs
 
 /// This is used for managing the items
 /// that are received and updated by a single stream.
-class SingleStreamItemsStateNotifier<T>
-    extends StreamedItemsStateNotifierBase<T> {
+///
+/// [E] is the item unique selector type.
+/// The field's type based on which is the distinction of items preserved.
+class SingleStreamItemsStateNotifier<T, E>
+    extends StreamedItemsStateNotifierBase<T, E> {
   SingleStreamItemsStateNotifier(
     this._createStream,
-    ItemsHandler itemsHandler,
+    ItemsHandler<T, E> itemsHandler,
   ) : super(itemsHandler);
 
   final Stream<ItemsStateStreamBatch<T>> Function() _createStream;
@@ -35,8 +37,8 @@ class SingleStreamItemsStateNotifier<T>
   @override
   void onDataUpdate(
     ItemsState<T> newItemsState, {
-    @required bool isInitialStreamBatch,
-    @required bool hasError,
+    required bool isInitialStreamBatch,
+    required bool hasError,
   }) {
     if (!hasError) {
       newItemsState =
