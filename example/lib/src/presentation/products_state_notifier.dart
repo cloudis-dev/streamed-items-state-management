@@ -6,11 +6,12 @@ import 'package:streamed_items_state_management/streamed_items_state_management.
 /// This is the version where all the products are received by a single stream
 /// with all the updates (i.e the products are not paginated).
 class ProductsStateNotifier
-    extends SingleStreamItemsStateNotifier<ProductModel> {
+    extends SingleStreamItemsStateNotifier<ProductModel, String> {
   ProductsStateNotifier(
     Stream<ItemsStateStreamBatch> Function() createStream,
   ) : super(
-          createStream,
+          createStream as Stream<ItemsStateStreamBatch<ProductModel>>
+              Function(),
           ProductsItemsHandler(),
         );
 }
