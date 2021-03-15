@@ -60,8 +60,8 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
   @protected
   void onDataUpdate(
     ItemsState<T> newItemsState, {
-    @required bool isInitialStreamBatch,
-    @required bool hasError,
+    required bool isInitialStreamBatch,
+    required bool hasError,
   }) {
     itemsState = newItemsState;
     notifyListeners();

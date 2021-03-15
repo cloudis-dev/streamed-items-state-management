@@ -23,8 +23,8 @@ class CreateStreamMustCreateNewInstanceException implements Exception {
 /// The update happens when a stream sends new data.
 typedef OnItemsStateUpdated<T> = void Function(
   ItemsState<T> newItemsState, {
-  @required bool isInitialStreamBatch,
-  @required bool hasError,
+  required bool isInitialStreamBatch,
+  required bool hasError,
 });
 
 /// Takes care of the stream handling.
@@ -33,8 +33,8 @@ typedef OnItemsStateUpdated<T> = void Function(
 /// [E] is the item unique selector type.
 /// The field's type based on which is the distinction of items preserved.
 class ItemsStreamHandler<T, E> {
-  StreamSubscription<ItemsStateStreamBatch<T>> _streamSubscription;
-  Stream<ItemsStateStreamBatch<T>> _lastStream;
+  late StreamSubscription<ItemsStateStreamBatch<T>> _streamSubscription;
+  Stream<ItemsStateStreamBatch<T>>? _lastStream;
 
   /// This is used in case the recovery attempt occurs after the dispose.
   bool _isDisposed = false;
@@ -51,10 +51,10 @@ class ItemsStreamHandler<T, E> {
   /// in case of an error in the update batches.
   /// When all the recovery attempts fail, the stream is canceled and updates are disabled.
   ItemsStreamHandler.listen({
-    @required ItemsState<T> Function() getCurrentItemsState,
-    @required ItemsHandler<T, E> itemsHandler,
-    @required Stream<ItemsStateStreamBatch<T>> Function() createStream,
-    @required OnItemsStateUpdated<T> onItemsStateUpdated,
+    required ItemsState<T> Function() getCurrentItemsState,
+    required ItemsHandler<T, E> itemsHandler,
+    required Stream<ItemsStateStreamBatch<T>> Function() createStream,
+    required OnItemsStateUpdated<T> onItemsStateUpdated,
     final int streamUpdateFailRecoveryAttemptsCount = 2,
     final int recoveryAttemptDelaySeconds = 5,
   }) {
@@ -71,7 +71,7 @@ class ItemsStreamHandler<T, E> {
     /// Replacement is needed in this case.
     void onData(
       ItemsStateStreamBatch<T> batch, {
-      @required bool shouldReplaceState,
+      required bool shouldReplaceState,
     }) {
       final newState = shouldReplaceState
           ? _createUpdatedState(

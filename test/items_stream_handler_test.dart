@@ -63,8 +63,8 @@ void main() {
       var counter = 0;
       void onDataUpdate(
         ItemsState<Tuple2<String, int>> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -164,8 +164,8 @@ void main() {
 
       void onDataUpdate(
         ItemsState<int> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -224,8 +224,8 @@ void main() {
 
       void onDataUpdate(
         ItemsState<int> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -275,8 +275,8 @@ void main() {
 
       void onDataUpdate(
         ItemsState<int> newItemsState, {
-        @required bool isInitialStreamBatch,
-        @required bool hasError,
+        required bool isInitialStreamBatch,
+        required bool hasError,
       }) {
         itemsState = newItemsState;
 
@@ -336,8 +336,8 @@ void main() {
 
               void onDataUpdate(
                 ItemsState<int> newItemsState, {
-                @required bool isInitialStreamBatch,
-                @required bool hasError,
+                required bool isInitialStreamBatch,
+                required bool hasError,
               }) {
                 itemsState = newItemsState;
               }

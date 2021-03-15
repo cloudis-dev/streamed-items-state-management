@@ -38,8 +38,8 @@ class SingleStreamItemsStateNotifier<T, E>
   @override
   void onDataUpdate(
     ItemsState<T> newItemsState, {
-    @required bool isInitialStreamBatch,
-    @required bool hasError,
+    required bool isInitialStreamBatch,
+    required bool hasError,
   }) {
     if (!hasError) {
       newItemsState =

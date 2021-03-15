@@ -44,8 +44,8 @@ class ItemsState<T> {
       const DeepCollectionEquality().hash(items) ^ status.hashCode;
 
   ItemsState<T> copyWith({
-    List<T> items,
-    ItemsStateStatus status,
+    List<T>? items,
+    ItemsStateStatus? status,
   }) =>
       ItemsState._(
         items == null ? this.items : List.unmodifiable(items),

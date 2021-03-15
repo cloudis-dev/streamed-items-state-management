@@ -30,12 +30,12 @@ class PagedStreamsItemsStateNotifier<T, E, Q>
     ItemsHandler<T, Q> itemsHandler,
   ) : super(itemsHandler);
 
-  final Stream<PagedItemsStateStreamBatch<T, E>> Function(E fromPageKey)
+  final Stream<PagedItemsStateStreamBatch<T, E>> Function(E? fromPageKey)
       _createStream;
 
   bool _isFetchingPage = false;
-  E _pageKeyCurrentlyBeingFetched;
-  E _lastFetchedPageKey;
+  E? _pageKeyCurrentlyBeingFetched;
+  E? _lastFetchedPageKey;
 
   @override
   void requestData() {
@@ -48,8 +48,8 @@ class PagedStreamsItemsStateNotifier<T, E, Q>
   @override
   void onDataUpdate(
     ItemsState<T> newItemsState, {
-    @required bool isInitialStreamBatch,
-    @required bool hasError,
+    required bool isInitialStreamBatch,
+    required bool hasError,
   }) {
     if (!hasError && isInitialStreamBatch) {
       _lastFetchedPageKey = _pageKeyCurrentlyBeingFetched;

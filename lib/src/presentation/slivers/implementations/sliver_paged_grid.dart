@@ -6,14 +6,14 @@ import 'package:streamed_items_state_management/src/presentation/utils/scroll_vi
 
 class SliverPagedGrid<T> extends PagedScrollViewBase<T> {
   SliverPagedGrid({
-    Key key,
-    int cacheItemsCountExtent,
-    @required ItemsState<T> itemsState,
-    @required ScrollViewItemBuilder<T> itemBuilder,
-    @required void Function() requestData,
-    ScrollViewErrorWidgetBuilder errorWidgetBuilder,
-    WidgetBuilder loadingWidgetBuilder,
-    @required SliverGridDelegate gridDelegate,
+    Key? key,
+    int? cacheItemsCountExtent,
+    required ItemsState<T> itemsState,
+    required ScrollViewItemBuilder<T> itemBuilder,
+    required void Function() requestData,
+    ScrollViewErrorWidgetBuilder? errorWidgetBuilder,
+    WidgetBuilder? loadingWidgetBuilder,
+    required SliverGridDelegate gridDelegate,
   }) : super(
           cacheItemsCountExtent: cacheItemsCountExtent,
           scrollViewSliverBuilder: (context, delegate) => SliverGrid(
