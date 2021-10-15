@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
@@ -36,28 +37,30 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
 
     // This is being processed in a microtask to make it possible to be called in the UI.
     // It is because of the [notifyListeners()] call
-    Future.microtask(
-      () {
-        itemsState = itemsState.copyWith(status: ItemsStateStatus.loading);
-        notifyListeners();
+    WidgetsBinding.instance?.addPostFrameCallback(
+      (_) {
+        if (!_isDisposed) {
+          itemsState = itemsState.copyWith(status: ItemsStateStatus.loading);
+          notifyListeners();
 
-        _handlersList.add(
-          ItemsStreamHandler.listen(
-            getCurrentItemsState: () => itemsState,
-            itemsHandler: _itemsHandler,
-            createStream: createStream,
-            onItemsStateUpdated: onDataUpdate,
-            onErrorCallback: _onErrorCallback,
-          ),
-        );
+          _handlersList.add(
+            ItemsStreamHandler.listen(
+              getCurrentItemsState: () => itemsState,
+              itemsHandler: _itemsHandler,
+              createStream: createStream,
+              onItemsStateUpdated: onDataUpdate,
+              onErrorCallback: _onErrorCallback,
+            ),
+          );
+        }
       },
     );
   }
 
   @override
   void dispose() async {
-    super.dispose();
     await Future.wait(_handlersList.map((e) => e.dispose()));
+    super.dispose();
     _isDisposed = true;
   }
 
