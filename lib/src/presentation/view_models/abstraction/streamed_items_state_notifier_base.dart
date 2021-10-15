@@ -25,6 +25,8 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
   @protected
   Stream<ItemsStateStreamBatch<T>> createStream();
 
+  bool _isDisposed = false;
+
   /// Request the data.
   @mustCallSuper
   void requestData() {
@@ -56,6 +58,7 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
   void dispose() async {
     super.dispose();
     await Future.wait(_handlersList.map((e) => e.dispose()));
+    _isDisposed = true;
   }
 
   /// Callback that is called when the current [ItemsState] is updated.
@@ -67,7 +70,9 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
     required bool isInitialStreamBatch,
     required bool hasError,
   }) {
-    itemsState = newItemsState;
-    notifyListeners();
+    if (!_isDisposed) {
+      itemsState = newItemsState;
+      notifyListeners();
+    }
   }
 }
