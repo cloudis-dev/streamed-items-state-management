@@ -1,32 +1,28 @@
-include: all_lint_rules.yaml
+include: package:flutter_lints/flutter.yaml
 
 analyzer:
-  strong-mode:
-    implicit-casts: true
-    implicit-dynamic: true
   errors:
-    public_member_api_docs: ignore
-    included_file_warning: ignore
-    top_level_function_literal_block: ignore
-    invalid_assignment: warning
-    missing_return: info
-    dead_code: info
-    missing_required_param: error
+    missing_required_param: warning
+    missing_return: warning
+
+exclude:
+  - '**/*.g.dart'
+  - '**/*.freezed.dart'
+  - '**/**/*generated_plugin*.dart'
+  - 'lib/generated/**'
+  - 'lib/l10n/**'
+  - 'build/**'
+  - 'assets/**'
 
 linter:
   rules:
-    type_annotate_public_apis: false
-    avoid_classes_with_only_static_members: false
-    prefer_double_quotes: false
-    always_specify_types: false
-    prefer_expression_function_bodies: false
-    always_put_required_named_parameters_first: false
-    avoid_as: false
-    flutter_style_todos: false
-    avoid_catches_without_on_clauses: false
+    prefer_single_quotes: true
     lines_longer_than_80_chars: false
     avoid_annotating_with_dynamic: false
     avoid_function_literals_in_foreach_calls: false
     prefer_relative_imports: false
     no_default_cases: false
     prefer_mixin: false
+    library_private_types_in_public: false
+    no_leading_underscores_for_local_identifiers: false
+    avoid_print: false

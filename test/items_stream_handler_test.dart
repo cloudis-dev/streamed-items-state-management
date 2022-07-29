@@ -38,17 +38,17 @@ void main() {
           ..add(
             ItemsStateStreamBatch(
               [
-                Tuple2(ChangeStatus.added, Tuple2('B', 1)),
-                Tuple2(ChangeStatus.added, Tuple2('A', 1)),
+                const Tuple2(ChangeStatus.added, Tuple2('B', 1)),
+                const Tuple2(ChangeStatus.added, Tuple2('A', 1)),
               ],
             ),
           )
           ..add(
             ItemsStateStreamBatch(
               [
-                Tuple2(ChangeStatus.removed, Tuple2('B', 1)),
-                Tuple2(ChangeStatus.added, Tuple2('C', 1)),
-                Tuple2(ChangeStatus.modified, Tuple2('A', 2)),
+                const Tuple2(ChangeStatus.removed, Tuple2('B', 1)),
+                const Tuple2(ChangeStatus.added, Tuple2('C', 1)),
+                const Tuple2(ChangeStatus.modified, Tuple2('A', 2)),
               ],
             ),
           )
@@ -69,8 +69,8 @@ void main() {
 
         if (counter == 0) {
           expect(newItemsState.items, [
-            Tuple2('A', 1),
-            Tuple2('B', 1),
+            const Tuple2('A', 1),
+            const Tuple2('B', 1),
           ]);
           expect(newItemsState.isDoneAndEmpty, false);
           expect(itemsState.status, ItemsStateStatus.waiting);
@@ -78,8 +78,8 @@ void main() {
           expect(hasError, false);
         } else if (counter == 1) {
           expect(newItemsState.items, [
-            Tuple2('A', 2),
-            Tuple2('C', 1),
+            const Tuple2('A', 2),
+            const Tuple2('C', 1),
           ]);
           expect(newItemsState.isDoneAndEmpty, false);
           expect(itemsState.status, ItemsStateStatus.waiting);
@@ -87,8 +87,8 @@ void main() {
           expect(hasError, false);
         } else if (counter == 2) {
           expect(newItemsState.items, [
-            Tuple2('A', 2),
-            Tuple2('C', 1),
+            const Tuple2('A', 2),
+            const Tuple2('C', 1),
           ]);
           expect(newItemsState.isDoneAndEmpty, false);
           expect(itemsState.status, ItemsStateStatus.allLoaded);
@@ -127,8 +127,8 @@ void main() {
             ..add(
               ItemsStateStreamBatch(
                 [
-                  Tuple2(ChangeStatus.added, 1),
-                  Tuple2(ChangeStatus.added, 2),
+                  const Tuple2(ChangeStatus.added, 1),
+                  const Tuple2(ChangeStatus.added, 2),
                 ],
               ),
             )
@@ -138,22 +138,22 @@ void main() {
             ..add(
               ItemsStateStreamBatch(
                 [
-                  Tuple2(ChangeStatus.added, 1),
-                  Tuple2(ChangeStatus.added, 3),
-                  Tuple2(ChangeStatus.added, 5),
+                  const Tuple2(ChangeStatus.added, 1),
+                  const Tuple2(ChangeStatus.added, 3),
+                  const Tuple2(ChangeStatus.added, 5),
                 ],
               ),
             )
             ..add(ItemsStateStreamBatch([
-              Tuple2(ChangeStatus.removed, 1),
+              const Tuple2(ChangeStatus.removed, 1),
             ])) // this is counter 2
             ..addError(Exception());
         } else if (counter == 3) {
           counter++;
-          streamCtrl..addError(Exception());
+          streamCtrl.addError(Exception());
         } else if (counter == 4) {
           counter++;
-          streamCtrl..addError(Exception());
+          streamCtrl.addError(Exception());
         } else if (counter == 5) {
           fail(
               'This should not execute because there are only 2 recovery attempts');
@@ -212,7 +212,7 @@ void main() {
       // wait for all the recovery attemps + 1.
       // In case another recovery attemt comes, it fails.
       await Future.delayed(
-          Duration(milliseconds: (recoveryDelay * 1000 + 100) * 4));
+          const Duration(milliseconds: (recoveryDelay * 1000 + 100) * 4));
     },
   );
 
@@ -220,7 +220,7 @@ void main() {
     'ItemsStreamHandler initial batch error.',
     () {
       final streamCreator = _StreamCreator<int>((streamCtrl) {
-        streamCtrl..addError(Exception());
+        streamCtrl.addError(Exception());
       });
 
       final itemsHandler =
@@ -265,17 +265,16 @@ void main() {
         if (counter == 0) {
           streamCtrl
             ..add(ItemsStateStreamBatch([
-              Tuple2(ChangeStatus.added, 1),
-              Tuple2(ChangeStatus.added, 2),
+              const Tuple2(ChangeStatus.added, 1),
+              const Tuple2(ChangeStatus.added, 2),
             ]))
             ..addError(Exception());
         } else if (counter == 1) {
-          streamCtrl
-            ..add(ItemsStateStreamBatch([
-              Tuple2(ChangeStatus.added, 1),
-              Tuple2(ChangeStatus.added, 2),
-              Tuple2(ChangeStatus.added, 3),
-            ]));
+          streamCtrl.add(ItemsStateStreamBatch([
+            const Tuple2(ChangeStatus.added, 1),
+            const Tuple2(ChangeStatus.added, 2),
+            const Tuple2(ChangeStatus.added, 3),
+          ]));
         }
       });
 
@@ -297,7 +296,7 @@ void main() {
           expect(isInitialStreamBatch, true);
           expect(hasError, false);
 
-          Future.delayed(Duration(milliseconds: 100)).then(
+          Future.delayed(const Duration(milliseconds: 100)).then(
             (value) => _completer.complete(),
           );
         } else if (counter == 1) {
@@ -323,7 +322,8 @@ void main() {
 
       await _completer.future;
       await handler.dispose();
-      await Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100));
+      await Future.delayed(
+          const Duration(milliseconds: recoveryDelay * 1000 + 100));
     },
   );
 
@@ -337,7 +337,7 @@ void main() {
           final stream = _StreamCreator<int>((streamCtrl) {
             streamCtrl
               ..add(ItemsStateStreamBatch([
-                Tuple2(ChangeStatus.added, 1),
+                const Tuple2(ChangeStatus.added, 1),
               ]))
               ..addError(Exception());
           }).createStream(isBroadcast: true);
@@ -367,7 +367,8 @@ void main() {
             recoveryAttemptDelaySeconds: recoveryDelay,
           );
 
-          Future.delayed(Duration(milliseconds: recoveryDelay * 1000 + 100))
+          Future.delayed(
+                  const Duration(milliseconds: recoveryDelay * 1000 + 100))
               .then((_) => _completer.completeError(Exception(
                   'Should throw an CreateStreamMustCreateNewInstanceException')));
         },

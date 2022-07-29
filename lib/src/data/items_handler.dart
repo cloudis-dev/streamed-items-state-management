@@ -70,7 +70,7 @@ class ItemsHandler<T, E> {
             .distinct(uniqueSelector)
             .where(itemFilterTest ?? (_) => true)
             .toList()
-              ..sort(sortCompare),
+          ..sort(sortCompare),
       );
     }
   }

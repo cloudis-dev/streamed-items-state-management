@@ -27,7 +27,7 @@ class ItemsState<T> {
       : items = List.unmodifiable([]),
         status = ItemsStateStatus.waiting;
 
-  ItemsState._(this.items, this.status);
+  const ItemsState._(this.items, this.status);
 
   /// When everything is fetched and there are no items.
   bool get isDoneAndEmpty =>

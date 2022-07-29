@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:streamed_items_state_management/src/data/items_handler.dart';
 import 'package:streamed_items_state_management/src/data/items_state.dart';
 import 'package:streamed_items_state_management/src/data/items_state_stream_batch.dart';
@@ -37,7 +36,7 @@ abstract class StreamedItemsStateNotifierBase<T, E> extends ChangeNotifier {
 
     // This is being processed in a microtask to make it possible to be called in the UI.
     // It is because of the [notifyListeners()] call
-    WidgetsBinding.instance?.addPostFrameCallback(
+    WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         if (!_isDisposed) {
           itemsState = itemsState.copyWith(status: ItemsStateStatus.loading);

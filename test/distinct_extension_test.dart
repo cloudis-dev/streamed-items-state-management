@@ -78,16 +78,16 @@ void main() {
 
   test('part equivalence', () {
     final lst = [
-      Tuple2('A', 1),
-      Tuple2('B', 1),
-      Tuple2('A', 2),
-      Tuple2('B', 2),
-      Tuple2('B', 3)
+      const Tuple2('A', 1),
+      const Tuple2('B', 1),
+      const Tuple2('A', 2),
+      const Tuple2('B', 2),
+      const Tuple2('B', 3)
     ];
 
     expect(lst.distinct((element) => element.item1), [
-      Tuple2('A', 1),
-      Tuple2('B', 1),
+      const Tuple2('A', 1),
+      const Tuple2('B', 1),
     ]);
   });
 }

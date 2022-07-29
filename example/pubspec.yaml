@@ -2,7 +2,6 @@ name: example
 description: An example usage of streamed_items_state_management package.
 publish_to: "none"
 version: 0.0.1
-author: Kristián Balaj
 homepage: https://github.com/KristianBalaj
 
 environment:

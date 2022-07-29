@@ -11,58 +11,58 @@ void main() {
     );
 
     final lst = [
-      Tuple2('B', 1),
-      Tuple2('A', 1),
-      Tuple2('C', 1),
+      const Tuple2('B', 1),
+      const Tuple2('A', 1),
+      const Tuple2('C', 1),
     ];
 
     test('empty addition', () {
       expect(handler.addItems(lst, []), [
-        Tuple2('A', 1),
-        Tuple2('B', 1),
-        Tuple2('C', 1),
+        const Tuple2('A', 1),
+        const Tuple2('B', 1),
+        const Tuple2('C', 1),
       ]);
     });
 
     test('empty remove', () {
       expect(handler.removeItems(lst, []), [
-        Tuple2('A', 1),
-        Tuple2('B', 1),
-        Tuple2('C', 1),
+        const Tuple2('A', 1),
+        const Tuple2('B', 1),
+        const Tuple2('C', 1),
       ]);
     });
 
     test('empty update', () {
       expect(handler.removeItems(lst, []), [
-        Tuple2('A', 1),
-        Tuple2('B', 1),
-        Tuple2('C', 1),
+        const Tuple2('A', 1),
+        const Tuple2('B', 1),
+        const Tuple2('C', 1),
       ]);
     });
 
     test('remove items test', () {
       expect(
         handler.removeItems(lst, [
-          Tuple2('C', 1),
-          Tuple2('X', 1),
-          Tuple2('B', 2),
+          const Tuple2('C', 1),
+          const Tuple2('X', 1),
+          const Tuple2('B', 2),
         ]),
-        [Tuple2('A', 1)],
+        [const Tuple2('A', 1)],
       );
     });
 
     test('update items test', () {
       expect(
         handler.updateItems(lst, [
-          Tuple2('C', 2),
-          Tuple2('B', 1),
-          Tuple2('X', 1),
+          const Tuple2('C', 2),
+          const Tuple2('B', 1),
+          const Tuple2('X', 1),
         ]),
         [
-          Tuple2('A', 1),
-          Tuple2('B', 1),
-          Tuple2('C', 2),
-          Tuple2('X', 1),
+          const Tuple2('A', 1),
+          const Tuple2('B', 1),
+          const Tuple2('C', 2),
+          const Tuple2('X', 1),
         ],
       );
     });
@@ -70,15 +70,15 @@ void main() {
     test('add items test', () {
       expect(
         handler.addItems(lst, [
-          Tuple2('C', 2),
-          Tuple2('B', 1),
-          Tuple2('X', 1),
+          const Tuple2('C', 2),
+          const Tuple2('B', 1),
+          const Tuple2('X', 1),
         ]),
         [
-          Tuple2('A', 1),
-          Tuple2('B', 1),
-          Tuple2('C', 2),
-          Tuple2('X', 1),
+          const Tuple2('A', 1),
+          const Tuple2('B', 1),
+          const Tuple2('C', 2),
+          const Tuple2('X', 1),
         ],
       );
     });
@@ -86,13 +86,13 @@ void main() {
     test('additional item filter test', () {
       expect(
         handler.addItems(lst, [
-          Tuple2('C', 2),
-          Tuple2('B', 5),
-          Tuple2('X', 5),
+          const Tuple2('C', 2),
+          const Tuple2('B', 5),
+          const Tuple2('X', 5),
         ]),
         [
-          Tuple2('A', 1),
-          Tuple2('C', 2),
+          const Tuple2('A', 1),
+          const Tuple2('C', 2),
         ],
       );
     });
@@ -107,13 +107,13 @@ void main() {
     );
 
     final lst = [
-      Tuple2([
+      const Tuple2([
         ['A']
       ], 1),
-      Tuple2([
+      const Tuple2([
         ['B']
       ], 1),
-      Tuple2([
+      const Tuple2([
         ['C']
       ], 1),
     ];
@@ -123,15 +123,15 @@ void main() {
           handler.addItems(
             lst,
             [
-              Tuple2([
+              const Tuple2([
                 ['A']
               ], 2)
             ],
           ).map((e) => Tuple2(e.item1.first.first, e.item2)),
           [
-            Tuple2('A', 2),
-            Tuple2('B', 1),
-            Tuple2('C', 1),
+            const Tuple2('A', 2),
+            const Tuple2('B', 1),
+            const Tuple2('C', 1),
           ]);
     });
 
@@ -140,15 +140,15 @@ void main() {
           handler.addItems(
             lst,
             [
-              Tuple2([
+              const Tuple2([
                 ['A']
               ], 2)
             ],
           ).map((e) => Tuple2(e.item1.first.first, e.item2)),
           [
-            Tuple2('A', 2),
-            Tuple2('B', 1),
-            Tuple2('C', 1),
+            const Tuple2('A', 2),
+            const Tuple2('B', 1),
+            const Tuple2('C', 1),
           ]);
     });
 
@@ -157,14 +157,14 @@ void main() {
           handler.removeItems(
             lst,
             [
-              Tuple2([
+              const Tuple2([
                 ['A']
               ], 1)
             ],
           ).map((e) => Tuple2(e.item1.first.first, e.item2)),
           [
-            Tuple2('B', 1),
-            Tuple2('C', 1),
+            const Tuple2('B', 1),
+            const Tuple2('C', 1),
           ]);
     });
   });

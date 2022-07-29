@@ -5,7 +5,7 @@ import 'package:streamed_items_state_management/src/presentation/utils/scroll_vi
 import 'package:streamed_items_state_management/src/presentation/utils/scroll_view_item_builder.dart';
 
 abstract class PagedScrollViewBase<T> extends StatelessWidget {
-  PagedScrollViewBase({
+  const PagedScrollViewBase({
     int? cacheItemsCountExtent,
     required this.scrollViewSliverBuilder,
     required this.itemBuilder,
@@ -69,10 +69,10 @@ abstract class PagedScrollViewBase<T> extends StatelessWidget {
                   return errorWidgetBuilder == null
                       ? Column(
                           children: [
-                            Icon(Icons.warning),
+                            const Icon(Icons.warning),
                             ElevatedButton(
                               onPressed: requestData,
-                              child: Icon(Icons.refresh),
+                              child: const Icon(Icons.refresh),
                             ),
                           ],
                         )
